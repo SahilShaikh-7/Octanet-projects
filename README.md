@@ -1,4 +1,4 @@
-# octanetprojects
+# Octanet Project
 
 As part of my internship, I'm currently working on a "To-Do List" web page project, which primarily involves using HTML and CSS. The goal of the project is to create a simple, yet functional interface where users can add, delete, and manage their tasks.
 
