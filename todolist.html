@@ -1,0 +1,176 @@
+<html></html>
+<head>
+    <title>My To-Do List</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <style>
+        body {
+            background: linear-gradient(to bottom, white, lightblue); /* Gradient from white to light blue */
+            color: #333;
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            flex-direction: column;
+        }
+        .content {
+            text-align: center;
+            margin-bottom: 20px;
+            animation: slideIn 1s ease-in-out;
+        }
+        @keyframes slideIn {
+            from { transform: translateY(-50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        h1 {
+            font-size: 2em;
+            margin-bottom: 20px;
+        }
+        input[type="text"] {
+            padding: 10px;
+            font-size: 1em;
+            border: none;
+            border-radius: 5px;
+            margin-right: 10px;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 1em;
+            border: none;
+            border-radius: 5px;
+            background-color: #555;
+            color: white;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+        button:hover {
+            background-color: #777;
+        }
+        button:active {
+            transform: scale(0.95);
+        }
+        ul {
+            list-style-type: none;
+            padding: 0;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        li {
+            font-size: 1.2em;
+            margin: 10px 0;
+            display: flex;
+            align-items: center;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+        .delete-btn {
+            background-color: #ff4d4d;
+            border: none;
+            border-radius: 5px;
+            color: white;
+            cursor: pointer;
+            margin-right: 10px;
+            padding: 5px 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+        .delete-btn:hover {
+            background-color: #ff1a1a;
+        }
+        .delete-btn:active {
+            transform: scale(0.95);
+        }
+        .extra-content {
+            text-align: center;
+            margin-top: 20px;
+            animation: slideIn 1s ease-in-out;
+        }
+        .extra-content p {
+            font-size: 1.2em;
+            margin: 10px 0;
+        }
+        .fade-out {
+            animation: fadeOut 0.5s ease-in-out forwards;
+        }
+        @keyframes fadeOut {
+            from { opacity: 1; }
+            to { opacity: 0; }
+        }
+    </style>
+</head>
+<body>
+    <div class="content">
+        <h1>My To-Do List</h1>
+        <input type="text" id="taskInput" placeholder="Add a new task" onkeypress="handleKeyPress(event)">
+        <button onclick="addTask()">Add Task</button>
+        <ul id="taskList"></ul>
+    </div>
+
+    <div class="extra-content">
+        <h2>About This To-Do List</h2>
+        <p>This is a simple to-do list application where you can add and delete tasks.</p>
+        <p>Use the input box above to add new tasks to your list. Click the trash icon to delete a task.</p>
+        <p>Stay organized and keep track of your tasks easily!</p>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', (event) => {
+            loadTasks();
+        });
+
+        function addTask() {
+            var taskInput = document.getElementById('taskInput');
+            var taskList = document.getElementById('taskList');
+            var newTask = taskInput.value;
+
+            if (newTask.trim() !== "") {
+                var li = document.createElement('li');
+                li.innerHTML = '<button class="delete-btn" onclick="deleteTask(this)"><i class="fas fa-trash-alt"></i></button>' + newTask;
+                taskList.appendChild(li);
+                saveTask(newTask);
+                taskInput.value = "";
+            }
+        }
+
+        function deleteTask(button) {
+            var li = button.parentElement;
+            var taskText = li.textContent.trim();
+            li.classList.add('fade-out');
+            li.addEventListener('animationend', () => {
+                li.remove();
+                removeTask(taskText);
+            });
+        }
+
+        function handleKeyPress(event) {
+            if (event.key === 'Enter') {
+                addTask();
+            }
+        }
+
+        function saveTask(task) {
+            var tasks = JSON.parse(localStorage.getItem('tasks')) || [];
+            tasks.push(task);
+            localStorage.setItem('tasks', JSON.stringify(tasks));
+        }
+
+        function removeTask(task) {
+            var tasks = JSON.parse(localStorage.getItem('tasks')) || [];
+            tasks = tasks.filter(t => t !== task);
+            localStorage.setItem('tasks', JSON.stringify(tasks));
+        }
+
+        function loadTasks() {
+            var tasks = JSON.parse(localStorage.getItem('tasks')) || [];
+            var taskList = document.getElementById('taskList');
+            tasks.forEach(task => {
+                var li = document.createElement('li');
+                li.innerHTML = '<button class="delete-btn" onclick="deleteTask(this)"><i class="fas fa-trash-alt"></i></button>' + task;
+                taskList.appendChild(li);
+            });
+        }
+    </script>
+</body>
+</html>
